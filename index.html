@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QR PWA — Generador</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+</head>
+<body>
+  <header>
+    <h1>QR PWA — Generador</h1>
+    <nav>
+      <button id="save-preset">Guardar preset</button>
+      <select id="presets"></select>
+      <button id="delete-preset">Borrar preset</button>
+    </nav>
+  </header>
+  <main>
+    <section class="controls">
+      <label>Tipo:
+        <select id="type">
+          <option value="text">Texto</option>
+          <option value="url">URL</option>
+          <option value="wifi">Wi‑Fi</option>
+          <option value="contact">Contacto (vCard)</option>
+        </select>
+      </label>
+
+      <div id="inputs">
+        <div data-for="text" class="input-group">
+          <textarea id="text-input" placeholder="Texto o URL"></textarea>
+        </div>
+
+        <div data-for="url" class="input-group hidden">
+          <input id="url-input" placeholder="https://example.com">
+        </div>
+
+        <div data-for="wifi" class="input-group hidden">
+          <input id="wifi-ssid" placeholder="SSID">
+          <input id="wifi-pass" placeholder="Password">
+          <label><input type="checkbox" id="wifi-hidden"> Oculto</label>
+          <select id="wifi-auth"><option>WPA</option><option>WEP</option><option>nopass</option></select>
+        </div>
+
+        <div data-for="contact" class="input-group hidden">
+          <input id="contact-name" placeholder="Nombre">
+          <input id="contact-phone" placeholder="Teléfono">
+          <input id="contact-email" placeholder="Email">
+          <input id="contact-org" placeholder="Organización">
+        </div>
+      </div>
+
+      <label>Logo (centro): <input type="file" id="logo-file" accept="image/*"></label>
+      <label>Fondo (detrás del QR): <input type="file" id="bg-file" accept="image/*"></label>
+
+      <label>Tamaño: <input id="size" type="number" value="300" min="128" max="2048"></label>
+      <label>Color: <input id="color" type="color" value="#000000"></label>
+
+      <button id="generate">Generar</button>
+      <button id="download-png">Descargar PNG</button>
+      <button id="download-svg">Descargar SVG</button>
+    </section>
+
+    <section class="preview">
+      <div id="qr-wrapper">
+        <div id="qr"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
