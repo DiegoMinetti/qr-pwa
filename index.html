@@ -3,73 +3,226 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b77ff" />
   <title>QR PWA — Generador</title>
   <link rel="manifest" href="/manifest.json">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <link rel="stylesheet" href="/style.css">
   <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 </head>
 <body>
   <header>
-    <h1>QR PWA — Generador</h1>
-    <nav>
-      <button id="save-preset">Guardar preset</button>
-      <select id="presets"></select>
-      <button id="delete-preset">Borrar preset</button>
+    <nav class="blue darken-1">
+      <div class="nav-wrapper container">
+        <a href="#" class="brand-logo">QR PWA — Generador</a>
+        <a href="#" id="controls-toggle" class="btn white grey-text text-darken-4" aria-controls="controls-panel" aria-expanded="false" aria-label="Mostrar controles"><i class="material-icons">menu</i></a>
+        <ul id="nav-mobile" class="right">
+          <li><a class="btn white grey-text text-darken-4" id="save-preset" aria-label="Guardar preset"> <i class="material-icons left">save</i>Guardar</a></li>
+          <li>
+            <div style="padding:6px 0">
+              <select id="presets" aria-label="Presets"></select>
+            </div>
+          </li>
+          <li><a class="btn red lighten-1" id="delete-preset" aria-label="Borrar preset"> <i class="material-icons left">delete</i>Borrar</a></li>
+          <li style="margin-left:12px"><div id="online-indicator" class="chip green white-text">Online</div></li>
+        </ul>
+      </div>
     </nav>
   </header>
-  <main>
-    <section class="controls">
-      <label>Tipo:
-        <select id="type">
-          <option value="text">Texto</option>
-          <option value="url">URL</option>
-          <option value="wifi">Wi‑Fi</option>
-          <option value="contact">Contacto (vCard)</option>
-        </select>
-      </label>
+  <main class="container" role="main">
+    <div class="row">
+    <section id="controls-panel" class="controls col s12">
+      <div class="control-card card">
+        <div class="card-content">
+          <h6 class="card-title">Tipo y contenido</h6>
+          <div class="input-field">
+            <select id="type" aria-label="Tipo de código">
+              <option value="text">Texto</option>
+              <option value="url">URL</option>
+              <option value="wifi">Wi‑Fi</option>
+              <option value="contact">Contacto (vCard)</option>
+            </select>
+            <label for="type">Tipo</label>
+          </div>
 
-      <div id="inputs">
-        <div data-for="text" class="input-group">
-          <textarea id="text-input" placeholder="Texto o URL"></textarea>
-        </div>
+          <div id="inputs">
+            <div data-for="text" class="input-group">
+              <label for="text-input" class="active">Texto</label>
+              <textarea id="text-input" placeholder="Texto o URL" aria-label="Texto o URL"></textarea>
+            </div>
 
-        <div data-for="url" class="input-group hidden">
-          <input id="url-input" placeholder="https://example.com">
-        </div>
+            <div data-for="url" class="input-group hidden">
+              <input id="url-input" placeholder="https://example.com" aria-label="URL">
+            </div>
 
-        <div data-for="wifi" class="input-group hidden">
-          <input id="wifi-ssid" placeholder="SSID">
-          <input id="wifi-pass" placeholder="Password">
-          <label><input type="checkbox" id="wifi-hidden"> Oculto</label>
-          <select id="wifi-auth"><option>WPA</option><option>WEP</option><option>nopass</option></select>
-        </div>
+            <div data-for="wifi" class="input-group hidden">
+              <input id="wifi-ssid" placeholder="SSID" aria-label="SSID">
+              <input id="wifi-pass" placeholder="Password" aria-label="Password">
+              <p>
+                <label><input type="checkbox" id="wifi-hidden"> <span>Oculto</span></label>
+              </p>
+              <div class="input-field">
+                <select id="wifi-auth" aria-label="Tipo de autenticación"><option>WPA</option><option>WEP</option><option>nopass</option></select>
+              </div>
+            </div>
 
-        <div data-for="contact" class="input-group hidden">
-          <input id="contact-name" placeholder="Nombre">
-          <input id="contact-phone" placeholder="Teléfono">
-          <input id="contact-email" placeholder="Email">
-          <input id="contact-org" placeholder="Organización">
+            <div data-for="contact" class="input-group hidden">
+              <input id="contact-name" placeholder="Nombre" aria-label="Nombre">
+              <input id="contact-phone" placeholder="Teléfono" aria-label="Teléfono">
+              <input id="contact-email" placeholder="Email" aria-label="Email">
+              <input id="contact-org" placeholder="Organización" aria-label="Organización">
+            </div>
+          </div>
         </div>
       </div>
 
-      <label>Logo (centro): <input type="file" id="logo-file" accept="image/*"></label>
-      <label>Fondo (detrás del QR): <input type="file" id="bg-file" accept="image/*"></label>
+      <div class="control-card card">
+        <div class="card-content">
+          <h6 class="card-title">Imágenes</h6>
+          <div class="file-field input-field">
+            <div class="btn">
+              <span>Logo</span>
+              <input type="file" id="logo-file" accept="image/*" aria-label="Subir logo">
+            </div>
+            <div class="file-path-wrapper"><input class="file-path validate" type="text" placeholder="Logo (centro)" aria-label="Ruta del archivo de logo"></div>
+            <a class="btn-flat red-text" id="remove-logo" style="margin-left:8px">Quitar logo</a>
+          </div>
+          <p>
+            <label>
+              <input type="checkbox" id="use-image-fill" />
+              <span>Usar la foto como relleno de las líneas del QR</span>
+            </label>
+          </p>
 
-      <label>Tamaño: <input id="size" type="number" value="300" min="128" max="2048"></label>
-      <label>Color: <input id="color" type="color" value="#000000"></label>
+          <div class="file-field input-field">
+            <div class="btn grey">
+              <span>Fondo</span>
+              <input type="file" id="bg-file" accept="image/*" aria-label="Subir fondo">
+            </div>
+            <div class="file-path-wrapper"><input class="file-path validate" type="text" placeholder="Fondo (detrás del QR)" aria-label="Ruta del archivo de fondo"></div>
+            <a class="btn-flat red-text" id="remove-bg" style="margin-left:8px">Quitar fondo</a>
+          </div>
+          <p>
+            <label>
+              <input type="checkbox" id="transparent-bg" />
+              <span>Fondo transparente (sin fondo)</span>
+            </label>
+          </p>
+        </div>
+      </div>
 
-      <button id="generate">Generar</button>
-      <button id="download-png">Descargar PNG</button>
-      <button id="download-svg">Descargar SVG</button>
-    </section>
+      <div class="control-card card">
+        <div class="card-content">
+          <h6 class="card-title">Apariencia</h6>
+          <div class="input-field">
+            <input id="size" type="number" value="300" min="128" max="2048" aria-label="Tamaño del QR">
+            <label for="size">Tamaño (px)</label>
+            <span class="helper-text">Valor entre 128 y 2048</span>
+          </div>
 
-    <section class="preview">
-      <div id="qr-wrapper">
-        <div id="qr"></div>
+          <div class="input-field">
+            <input id="color" type="color" value="#000000" aria-label="Color del QR">
+            <label for="color">Color</label>
+            <a class="btn-flat" id="reset-color" style="margin-left:8px">Restaurar color</a>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+            <p style="margin:0">
+              <label>
+                <input type="checkbox" id="module-stroke-enable" />
+                <span>Agregar borde a cada módulo</span>
+              </label>
+            </p>
+            <input id="module-stroke-color" type="color" value="#ffffff" aria-label="Color del borde" style="height:36px" />
+            <input id="module-stroke-width" type="number" value="2" min="0" max="20" style="width:80px" aria-label="Ancho del borde (px)" />
+          </div>
+        </div>
+      </div>
+
+      <div class="control-card card">
+        <div class="card-content">
+          <h6 class="card-title">Formato (puntos / líneas)</h6>
+          <div class="input-field">
+            <label for="dots-shape">Forma de los módulos</label>
+            <select id="dots-shape">
+              <option value="rounded" selected>Redondeado</option>
+              <option value="dots">Puntos</option>
+              <option value="square">Cuadrado</option>
+              <option value="extra-rounded">Muy redondeado</option>
+              <option value="classy">Classy</option>
+            </select>
+          </div>
+
+          <div class="input-field">
+            <label for="corner-square-shape">Forma de esquinas (cuadrado)</label>
+            <select id="corner-square-shape">
+              <option value="square" selected>Cuadrado</option>
+              <option value="extra-rounded">Extra redondeado</option>
+              <option value="dot">Punto</option>
+            </select>
+          </div>
+
+          <div class="input-field">
+            <label for="corner-dot-shape">Forma de esquinas (punto)</label>
+            <select id="corner-dot-shape">
+              <option value="dot" selected>Punto</option>
+              <option value="square">Cuadrado</option>
+              <option value="extra-rounded">Extra redondeado</option>
+            </select>
+          </div>
+
+          <div class="input-field">
+            <label for="margin-range">Margen (quiet zone)</label>
+            <div style="display:flex;align-items:center;gap:10px">
+              <input id="margin-range" type="range" min="0" max="80" value="10">
+              <span id="margin-value" aria-live="polite">10</span>
+            </div>
+            <span class="helper-text">Ajusta el margen exterior del QR</span>
+          </div>
+
+          <div class="input-field">
+            <label for="module-scale">Escala módulos</label>
+            <div style="display:flex;align-items:center;gap:10px">
+              <input id="module-scale" type="range" min="0.5" max="1.5" step="0.05" value="1">
+              <span id="module-scale-value" aria-live="polite">1.00</span>
+            </div>
+            <span class="helper-text">Escala relativa del resultado (afecta ancho/alto)</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="control-card card">
+        <div class="card-content">
+          <h6 class="card-title">Acciones</h6>
+          <div class="actions-row">
+            <a class="btn waves-effect waves-light" id="generate" aria-label="Generar código"> <i class="material-icons left">qr_code</i>Generar</a>
+            <a class="btn teal lighten-1" id="download-png" aria-disabled="true" aria-label="Descargar PNG"> <i class="material-icons left">download</i>PNG</a>
+            <a class="btn teal lighten-2" id="download-svg" aria-disabled="true" aria-label="Descargar SVG"> <i class="material-icons left">file_copy</i>SVG</a>
+            <a class="btn blue lighten-1" id="run-demo" aria-label="Demo presets"> <i class="material-icons left">auto_awesome</i>Demo</a>
+            <a class="btn grey lighten-1" id="copy-data" aria-label="Copiar datos"> <i class="material-icons left">content_copy</i>Copiar</a>
+            <a class="btn amber darken-1" id="share-data" aria-label="Compartir" style="margin-left:6px"> <i class="material-icons left">share</i>Compartir</a>
+          </div>
+        </div>
       </div>
     </section>
+    <section class="preview col s12">
+      <div class="card">
+          <div class="card-content">
+          <span class="card-title">Previsualización</span>
+          <div id="loading" style="display:none;margin-bottom:8px"><div class="progress"><div class="indeterminate"></div></div></div>
+          <div id="qr-wrapper" style="display:flex;align-items:center;justify-content:center;padding:20px">
+            <div id="qr"></div>
+          </div>
+          <div id="status" aria-live="polite" class="visually-hidden"></div>
+        </div>
+      </div>
+    </section>
+    </div>
+    </div>
   </main>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script type="module" src="/app.js"></script>
 </body>
 </html>

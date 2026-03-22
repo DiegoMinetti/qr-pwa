@@ -1,14 +1,88 @@
-*{box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+*{box-sizing:border-box;font-family:Roboto,system-ui,Segoe UI,Helvetica,Arial,sans-serif}
+html,body{height:100%}
 body{margin:0;padding:0;display:flex;flex-direction:column;min-height:100vh}
-header{background:#0b77ff;color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
-header h1{margin:0;font-size:16px}
-.controls{padding:16px;display:flex;flex-wrap:wrap;gap:8px;background:#f6f8fb}
+.root-preview-vars:root{}
+.visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+.controls{padding:16px;display:block}
+/* Keep nav colors to Materialize, don't override */
+.nav-wrapper .brand-logo{font-weight:500}
+#qr, #qr-wrapper{max-width:100%}
 .input-group{display:flex;flex-direction:column;gap:6px}
 .input-group.hidden{display:none}
-textarea{min-width:320px;min-height:80px}
+textarea{width:100%;min-height:80px}
+input, textarea, select{width:100%;max-width:100%}
+
+/* Focus styles for keyboard users */
+:focus-visible{outline:3px solid #ffd54f;outline-offset:2px}
+
+/* Responsive nav tweaks */
+.nav-wrapper .brand-logo{font-weight:500}
+@media(max-width:600px){
+	.nav-wrapper .brand-logo{font-size:1rem}
+	nav .right{display:flex;flex-wrap:wrap;gap:6px}
+}
+
+/* Mobile controls toggle */
+#controls-toggle{display:none}
+@media(max-width:900px){
+	#controls-toggle{display:inline-block;margin-left:8px}
+	#controls-panel{display:none}
+	#controls-panel.open{display:block;background:var(--surface, #fff);padding:12px;border-radius:8px;margin:12px 0}
+}
+
+/* Control card styles */
+.control-card{margin-bottom:12px;border-radius:8px}
+.control-card .card-content{padding:12px}
+.control-card .card-title{margin:0 0 8px 0;font-weight:500;font-size:0.95rem}
+.actions-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* Layout for controls column */
+.controls{display:flex;flex-direction:column;gap:10px}
+
+/* Ensure form controls inside cards have consistent spacing */
+.control-card .input-field{margin:6px 0}
+.file-field{margin:6px 0}
 #qr-wrapper{width:100%;display:flex;align-items:center;justify-content:center;padding:20px}
 #qr-wrapper{background-size:cover;background-position:center}
 #qr{background:transparent}
+#qr svg, #qr canvas{max-width:none;height:auto;display:block}
+.file-path-wrapper input{width:100%}
+/* chips for online/offline */
+.chip.green{background:#43a047}
+.chip.red{background:#e53935}
 button{padding:8px 12px}
 .preview{flex:1}
-@media(min-width:900px){main{display:flex} .controls{flex:1 1 320px;max-width:420px} .preview{flex:2 1 600px}}
+
+/* On larger screens keep preview fixed to the right and give the form visual priority */
+:root{
+	--preview-width: 340px;
+	--preview-right: 24px;
+	--preview-top-offset: 80px;
+	--controls-gap: 16px;
+}
+
+@media(min-width:900px){
+	/* Layout: preview should appear on top, controls below and scrollable */
+	main{display:flex;flex-direction:column;padding-right:0}
+	/* force preview to render first visually so it sits on top of the page */
+	.row{display:flex;flex-direction:column}
+	.preview{order:-1;width:100%;position:relative;max-height:none;overflow:visible;padding:12px;margin-bottom:12px}
+	/* Controls take full width and become a scrollable area under the preview */
+	.controls{flex:none;max-width:100%;margin-right:0}
+	#controls-panel{max-height:calc(100vh - var(--qr-size,300px) - 140px);overflow:auto}
+
+	/* Make the form cards more prominent */
+	.controls .control-card{background:#ffffff;border:1px solid rgba(0,0,0,0.06);box-shadow:0 6px 18px rgba(18,38,63,0.06)}
+
+	/* Make preview visually lighter */
+	.preview .card{background:linear-gradient(135deg,#ffffff 0%,#fbfdff 100%);border:1px solid rgba(0,0,0,0.04);box-shadow:0 4px 10px rgba(8,15,25,0.04)}
+	#qr-wrapper{padding:12px}
+	#qr{transform:none;transition:none}
+
+	/* Ensure the QR element uses the CSS variable size even if svg is nested */
+	#qr svg, #qr canvas{width:var(--qr-size,300px);height:var(--qr-size,300px);max-width:none}
+}
+
+/* Ensure the QR itself stays a square of the requested size and is right-aligned inside the preview */
+#qr{display:flex;align-items:center;justify-content:center}
+#qr > svg, #qr > canvas{width:var(--qr-size,300px);height:var(--qr-size,300px);max-width:none;display:block}
